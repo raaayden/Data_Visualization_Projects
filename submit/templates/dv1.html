@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Initialize a select button -->
+<select id="selectState"></select>
+
+<!-- Create a div where the graph will take place -->
+<div id="UR-state"></div>
+
+<!-- Color Scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script>
+
+    //Dimension and margins of the graph
+    var margin = {top: 35, right: 100, bottom: 35, left: 65},
+        width = 600 - margin.left - margin.right,
+        height = 350 - margin.top - margin.bottom;
+
+    //append svg to body
+    var chart1 = d3.select("#UR-state")
+        .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+    d3.csv("https://raw.githubusercontent.com/raaayden/projectDV/master/data/ur.csv", function(data){
+
+        //List of states
+        var states = ["Johor","Kedah", "Kelantan", "Kuala Lumpur", "Melaka", "Negeri Sembilan", "Pahang", "Perak", 
+        "Perlis", "Pulau Pinang", "Sarawak", "Sabah", "Selangor", "Terengganu"]
+
+        d3.select("#selectState")
+            .selectAll('myOptions')
+                .data(states)
+            .enter()
+                .append('option')
+            .text(function(d) {return d;})
+            .attr("value", function(d) {return d;})
+
+
+        chart1.append("text")
+            .attr("x", (width / 2))             
+            .attr("y", 0 - (margin.top / 2))
+            .attr("class", "title")
+            .attr("text-anchor", "middle")  
+            //.style("font-size", "16px") 
+            .style("text-decoration", "underline")  
+            .text("Unemployment Rate by year");  
+
+        // X axis (Year)
+        var x = d3.scaleLinear()
+            .domain([2010,2015])
+            .range([ 0, width]);
+        chart1.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x).ticks(5));
+        
+
+
+        // Y axis (unemployment rate)
+        var y = d3.scaleLinear()
+            .domain( [0,6])
+            .range([ height, 0 ]);
+        chart1.append("g")
+            .call(d3.axisLeft(y));
+        chart1.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x",0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .style("fill","#2c3e50")
+            .text("Unemployment Rate");
+
+        
+        //Intialize with Johor
+        var line = chart1
+            .append('g')
+            .append("path")
+                .datum(data)
+                .attr("d", d3.line()
+                .x(function(d) { return x(+d.Year) })
+                .y(function(d) { return y(+d.Johor) })
+                )
+                .attr("stroke", "#16161D")
+                .style("stroke-width", 4)
+                .style("fill", "none")
+
+        var dot = chart1
+            .selectAll('circle')
+            .data(data)
+            .enter()
+            .append('circle')
+                .attr("cx", function(d) { return x(+d.Year) })
+                .attr("cy", function(d) { return y(+d.Johor) })
+                .attr("r", 7)
+                .style("fill", "#272727")
+
+
+        // tooltip
+        
+        
+
+        //Function that update the chart
+        function update(selectedGroup){
+
+            //create new data with selection
+            var dataFilter = data.map(function(d){return {year: d.Year, state:d[selectedGroup]} })
+
+            //update the line
+            line
+                .datum(dataFilter)
+                .transition()
+                .duration(1000)
+                .attr("d", d3.line()
+                .x(function(d) { return x(+d.year) })
+                .y(function(d) { return y(+d.state) })
+                )
+            dot
+                .data(dataFilter)
+                .transition()
+                .duration(1000)
+                    .attr("cx", function(d) { return x(+d.year) })
+                    .attr("cy", function(d) { return y(+d.state) })
+        }
+
+        //when button change update chart
+        d3.select("#selectState").on("change", function(d){
+            var selectedOption = d3.select(this).property("value")
+            update(selectedOption)
+        })
+
+
+
+    })
+
+</script>

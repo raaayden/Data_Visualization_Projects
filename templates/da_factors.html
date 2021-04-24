@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Correlation of Drugs with Total Crime by states</title>
+	<meta charset="utf-8" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<style>
+	
+		.title {
+			color: blue;
+			font-size: 1.5em;
+			font-family: "Open Sans", sans-serif;
+			font-style: normal;
+		}
+		
+		.bar {
+		  fill: steelblue;
+		}
+
+		.bar:hover {
+		  fill: lightblue;
+		}
+
+		.axis {
+		  font: 10px sans-serif;
+		}
+
+		.axis path,
+		.axis line {
+		  fill: none;
+		  stroke: #000;
+		  shape-rendering: crispEdges;
+		}
+
+		.x.axis path {
+		  display: none;
+		}
+	</style>
+</head>
+<div id="drug_addicts"></div>
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>	
+<script>
+		// dimension and margins of the chart
+		var margin = {top: 50, right: 80, bottom: 35, left: 45},
+			width = 1090 - margin.left - margin.right,
+			height = 800 - margin.top - margin.bottom;
+		
+		//set the ranges for bar and line
+		var xBar = d3.scaleBand().rangeRound([0, width]).paddingInner(0.3).paddingOuter(0.25);
+		
+		var yBar = d3.scaleLinear().rangeRound([height, 0]);
+		
+		var xLine = d3.scalePoint().rangeRound([0, width]).padding(0.5);
+		
+		var yLine = d3.scaleLinear().rangeRound([height, 0]);
+		
+		//var xAxis = d3.axisBottom().scale(xBar);
+		
+		//var yAxis = d3.axisLeft().scale(yBar).ticks(10);
+		
+		//Define the line
+		var valueline = d3.line()
+			.x(function (d) { return xLine(d.key); })
+			.y(function (d) { return yLine(d.Drug_Addicts); });
+		
+		
+		var svg = d3.select("#drug_addicts").append("svg")
+			.attr("class", "chart5")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		
+		//Get the data
+		d3.csv("https://raw.githubusercontent.com/raaayden/projectDV/master/data/all.csv", function(error, csv_data){
+			var data = d3.nest()
+			    .key(function(d) { return d.Year;})
+			    .rollup(function(d) { 
+					return {
+						line1: d3.sum(d, function(e) {return e.Total_Crime; }),
+						line2: d3.sum(d, function(e) {return e.Drug_Addicts; })
+					};
+				}).entries(csv_data);
+			if (error) throw error;
+			//Format the data
+			
+				
+			data.forEach(function(d) {
+				d.Total_Crime = +d.value.line1;
+				d.Drug_Addicts = +d.value.line2;
+				
+			});
+			
+			console.table(data);
+			
+			//Scale the range of the data in the domain
+			xBar.domain(data.map(function(d) { return d.key; }));
+			xLine.domain(data.map(function(d) { return d.key; }));
+			yBar.domain([0, d3.max(data, function(d) {return d.Total_Crime; })]);
+			yLine.domain([0, d3.max(data, function(d) {return d.Drug_Addicts; })]);
+			
+			// draw legend
+			var legend = svg.selectAll("g")
+				.data(data)
+				.enter()
+				.append("g")
+				.attr("class", "legend");
+
+			// draw legend text (blue color)
+			legend.append("text")
+				.style("font", "14px")
+				.attr("x", width - 40)
+				.attr("y", -1)
+				.attr("dy", ".35em")
+				.style("text-anchor", "end")
+				.text("Total Crime");
+				
+			// draw legend text (crimson color)
+			legend.append("text")
+				.style("font", "14px")
+				.attr("x", width - 40)
+				.attr("y", 25)
+				.attr("dy", ".35em")
+				.style("text-anchor", "end")
+				.text("Drug Addicts");
+
+			
+			svg.append("text")
+				.attr("x", (width / 2))             
+				.attr("y", 0 - (margin.top / 2))
+				.attr("class", "title")
+				.attr("text-anchor", "middle")  
+				//.style("font-size", "16px") 
+				.style("text-decoration", "underline")  
+				.text("Do Drug Addicts Affect The Number of Total Crimes in Malaysia?");
+			
+			var rect = svg.selectAll("rect")
+				.data(data)
+			
+			//Append the rectangles for the bar chart
+			rect.enter().append("rect")
+				.merge(rect)
+				.attr("class", "bar")
+				//.style("stroke", "none")
+				//.style("fill", "#ccc")
+				.attr("x", function(d) { return xBar(d.key); })
+				.attr("width", function(d){ return xBar.bandwidth(); })
+				.attr("y", function(d) {return yBar(d.Total_Crime); })
+				.attr("height", function(d) {return height - yBar(d.Total_Crime); });
+			
+			//Add the valueline path
+			svg.append("path")
+				.data([data])
+				.attr("class", "line")
+				.attr("fill", "none")
+				.style("stroke", "crimson")
+				.style("stroke-width", "5px")
+				.attr("d", valueline)
+				
+			var points = svg.selectAll("circle.point")
+				.data(data)
+					
+		    points.enter().append("circle")
+				.merge(points)
+				.attr("class", "point")
+				.style("stroke", "crimson")
+				.style("stroke-width", 3)
+				.style("fill", "crimson")
+				.attr("cx", function(d){ return xLine(d.key); })
+				.attr("cy", function(d){ return yLine(d.Drug_Addicts); })
+				.attr("r", function(d){ return 3; });
+			
+			//Add X axis
+			svg.append("g")
+				.attr("transform", "translate(0," + height + ")")
+				.style("font", "16px times")
+				.call(d3.axisBottom(xLine));
+				
+			// text label for the x axis
+			svg.append("text")             
+			   .attr("x", width / 2 )
+			   .attr("y",  margin.top + 650)
+			   .style("text-anchor", "middle")
+			   .style("font-size", "20px")
+			   .text("Year");
+			
+			//Add YBar axis
+			svg.append("g")
+				.attr("class", "y axis")
+				.style("font", "15px times")
+				.call(d3.axisLeft(yBar))
+				.append("text")
+				.attr("transform", "rotate(-90)")
+				.attr("y", 6)
+				.attr("dy", ".71em")
+				//.style("text-anchor", "end")
+				//.text("Total crime");
+			
+			svg.append("text")
+			    .attr("transform", "rotate(-90)")
+			    .attr("y", 0 - margin.left)
+			    .attr("x",0 - (height / 2))
+			    .attr("dy", "15px")
+			    .style("text-anchor", "middle")
+			    .text("Total Number of Crime"); 
+				
+			//Add YLine Axis
+			svg.append("g")
+				.attr("class", "axisRed")
+				.style("font", "16px times")
+				.attr("transform", "translate( " + width + ", 0 )")
+				.call(d3.axisRight(yLine));
+				
+			svg.append("text")
+			    .attr("transform", "rotate(-90)")
+			    .attr("y", width + 40)
+			    .attr("x",0 - (height / 2))
+			    .attr("dy", "15px")
+			    .style("text-anchor", "middle")
+			    .text("Total Number of Drug Addicts");
+			
+			legend.append("rect")
+				.attr("x", width - 35)
+				.attr("y", -10)
+				.attr("width", 15)
+				.attr("height", 15)
+				.style("fill", "steelblue");
+			
+			legend.append("rect")
+				.attr("x", width - 35)
+				.attr("y", 24)
+				.attr("width", 15)
+				.attr("height", 3)
+				.style("fill", "crimson");
+				
+		});
+		
+</script>
+
+</html>

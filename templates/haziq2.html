@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Radar Chart</title>
+	<script async="" src="{{url_for('static', filename='analytics.js.download')}}"></script>
+	<script src="{{url_for('static', filename='Chart.min.js.download')}}"></script>
+	<script src="{{url_for('static', filename='utils.js.download')}}"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+	</style>
+<style type="text/css">/* Chart.js */
+@keyframes chartjs-render-animation{from{opacity:.99}to{opacity:1}}.chartjs-render-monitor{animation:chartjs-render-animation 1ms}.chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1}.chartjs-size-monitor-expand>div{position:absolute;width:1000000px;height:1000000px;left:0;top:0}.chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0}</style></head>
+
+<body>
+	<div style="width:100%"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+		<canvas id="canvas" style="display: block" width="950" height=" 600" class="chartjs-render-monitor"></canvas>
+	</div>
+	<div style="text-align: center; font-size: 20px;">
+		<input type="checkbox" id="Johor" onclick="Johor()"><label> Johor</label>
+		<input type="checkbox" id="Kedah" onclick="Kedah()"><label> Kedah</label>
+		<input type="checkbox" id="Kelantan" onclick="Kelantan()"><label> Kelantan</label>
+		<input type="checkbox" id="KualaLumpur" onclick="KualaLumpur()"><label> Kuala Lumpur</label>
+		<input type="checkbox" id="Melaka" onclick="Melaka()"><label> Melaka</label>
+		<input type="checkbox" id="NegeriSembilan" onclick="NegeriSembilan()"><label> Negeri Sembilan</label>
+		<input type="checkbox" id="Pahang" onclick="Pahang()"><label> Pahang</label><br>
+		<input type="checkbox" id="Perak" onclick="Perak()"><label> Perak</label>
+		<input type="checkbox" id="Perlis" onclick="Perlis()"><label> Perlis</label>
+		<input type="checkbox" id="PulauPinang" onclick="PulauPinang()"><label> Pulau Pianng</label>
+		<input type="checkbox" id="Sabah" onclick="Sabah()"><label> Sabah</label>
+		<input type="checkbox" id="Sarawak" onclick="Sarawak()"><label> Sarawak</label>
+		<input type="checkbox" id="Selangor" onclick="Selangor()"><label> Selangor</label>
+		<input type="checkbox" id="Terengganu" onclick="Terengganu()"><label> Terengganu</label>
+	</div>
+	
+	
+	
+		
+	<script>
+		
+
+		var color = Chart.helpers.color;
+		var config = {
+			type: 'radar',
+			data: {
+				labels: ['Murder','Rape',['Armed', 'Group','Robbery'], ['Group', 'Robbery'], ['Armed','Robbery'], 'Robbery','Injure','Theft', ['Car', 'Theft'], ['Motorcycle', 'Theft'],['Heavy', 'Vehicle', 'Theft'],['Snatch','Theft'],'House Burglary'],
+				datasets: [{
+					label: '',
+					backgroundColor: color(window.chartColors.white).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.white,
+					pointBackgroundColor: window.chartColors.white,
+					data: []
+				}, {
+					label: '',
+					backgroundColor: color(window.chartColors.white).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.white,
+					pointBackgroundColor: window.chartColors.white,
+					data: []
+				}]
+			},
+			options: {
+				legend: {
+					position: 'top',
+				},
+				title: {
+					display: true,
+					text: 'Crime Occurence Comparison Radar Chart'
+				},
+				scale: {
+					ticks: {
+						beginAtZero: true
+					}
+				}
+			}
+		};
+
+		window.onload = function() {
+			window.myRadar = new Chart(document.getElementById('canvas'), config);
+		};
+
+
+		var colorNames = Object.keys(window.chartColors);
+		
+		
+		
+			
+		
+		
+		function Johor() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Johor");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Johor',
+				backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.red,
+					pointBackgroundColor: window.chartColors.red,
+					data: [ 
+					'457','2719','175','11457','26','2498','4752','17549','10877','41515','3409','299','12399'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function Kedah() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Kedah");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Kedah',
+				backgroundColor: color(window.chartColors.yellow).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.yellow,
+					pointBackgroundColor: window.chartColors.yellow,
+					data: [ 
+					'154','1649','149','3292','34','1007','2613','9397','3494','23673','591','1289','9628'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function Kelantan() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Kelantan");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Kelantan',
+				backgroundColor: color(window.chartColors.orange).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.orange,
+					pointBackgroundColor: window.chartColors.orange,
+					data: [ 
+					'102','1438','67','822','21','394','1943','3711','4344','15060','603','783','6545'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function KualaLumpur() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("KualaLumpur");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Kuala Lumpur',
+				backgroundColor: color(window.chartColors.green).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.green,
+					pointBackgroundColor: window.chartColors.green,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function Melaka() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Melaka");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Melaka',
+				backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.blue,
+					pointBackgroundColor: window.chartColors.blue,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function NegeriSembilan() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("NegeriSembilan");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Negeri Sembilan',
+				backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.red,
+					pointBackgroundColor: window.chartColors.red,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function Pahang() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Pahang");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Pahang',
+				backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.red,
+					pointBackgroundColor: window.chartColors.red,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function Perak() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Perak");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Perak',
+				backgroundColor: color(window.chartColors.orange).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.orange,
+					pointBackgroundColor: window.chartColors.orange,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function Perlis() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Perlis");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Perlis',
+				backgroundColor: color(window.chartColors.yellow).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.yellow,
+					pointBackgroundColor: window.chartColors.yellow,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function PulauPinang() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("PulauPinang");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Pulau Pinang',
+				backgroundColor: color(window.chartColors.green).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.green,
+					pointBackgroundColor: window.chartColors.green,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function Sabah() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Sabah");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Sabah',
+				backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.blue,
+					pointBackgroundColor: window.chartColors.blue,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		
+		function Sarawak() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Sarawak");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Sarawak',
+				backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.red,
+					pointBackgroundColor: window.chartColors.red,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+
+		function Selangor() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Selangor");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Selangor',
+				backgroundColor: color(window.chartColors.orange).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.orange,
+					pointBackgroundColor: window.chartColors.orange,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+		
+		function Terengganu() {
+		  // Get the checkbox
+		  var checkBox = document.getElementById("Terengganu");
+		  
+
+		  // If the checkbox is checked, display the output text
+		  if (checkBox.checked == true){
+			config.data.datasets.splice(0, 1);
+			var colorName = colorNames[config.data.datasets.length % colorNames.length];
+			var newColor = window.chartColors[colorName];
+
+			var newDataset = {
+				label: 'Terengganu',
+				backgroundColor: color(window.chartColors.yellow).alpha(0.2).rgbString(),
+					borderColor: window.chartColors.yellow,
+					pointBackgroundColor: window.chartColors.yellow,
+					data: [ 
+					'20','50','70','60','40','50','20','20','30','50','20','10','20'
+					]
+			};
+			config.data.datasets.push(newDataset);
+			window.myRadar.update();
+		  } else {
+			
+		  }
+		};
+	</script>
+
+
+
+</body></html>

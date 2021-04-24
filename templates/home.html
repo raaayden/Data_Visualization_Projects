@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project DV</title>
+</head>
+<body>
+    <h1>Overall Trends of Crime Rates in Malaysia from 2010 - 2015</h1>
+    <div class="a">
+        <div>{% include 'haziq1.html' %}</div>
+        <div class="chart2">{% include 'haziq2.html' %}</div>
+    </div>
+    
+    <div class="gdp-ur">
+        <h1>Primary cause of Crime rate in Malaysia</h1>
+        <div>{% include 'dv1.html' %}</div>
+        <div>
+            <h3>GDP per capita by state</h1>
+            {% include 'dv2.html' %}
+        </div>
+    </div>
+    <div class="pop-tc">
+        <div>{% include 'da_factors.html' %}</div>
+        <div>{% include 'sankey.html' %}</div>
+    </div>
+</body>
+</html>
+<style>
+    .gdp-ur, .pop-tc{
+        padding: 1%;
+        background-color: #e3eaa7;
+        width: 100%;
+        overflow: hidden;
+    }
+    a{
+        margin-top: 10%;
+        width: 100%;
+        overflow: hidden;
+    }
+    .chart3, .chart5{
+        float: left;
+    }
+    .chart1{
+        padding: 3%;
+        float: left;
+    }
+    .chart2{
+        padding: 3%;
+        margin-left: 55%;
+    }
+    .chart4, .chart6{
+        margin-left: 55%;
+    }
+    h1{
+        text-align: center;
+        color: #333;
+    }
+    h3{
+        text-decoration: underline;
+        margin-left:  72%;
+    }
+    body{
+        /* background-color: #618685; */
+    }
+    
+
+</style>
